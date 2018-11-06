@@ -9,7 +9,7 @@ function Marker(poiData) {
 
     this.poiData = poiData;
 
-    var markerLocation = new AR.GeoLocation(poiData.latitude, poiData.longitude, poiData.altitude);
+    var markerLocation = new AR.GeoLocation(poiData.latitude, poiData.longitude);
 
     /*
         There are two major points that need to be considered while drawing multiple AR.Drawables at the same
@@ -34,10 +34,10 @@ function Marker(poiData) {
         opacity: 1.0
     });
 
-    this.titleLabel = new AR.Label(poiData.title.trunc(10), 1, {
+    this.titleLabel = new AR.Label(poiData.title, 1, {
         zOrder: 1,
         translate: {
-            y: 0.55
+            y: 1.75
         },
         style: {
             textColor: '#FFFFFF',
@@ -45,7 +45,7 @@ function Marker(poiData) {
         }
     });
 
-    this.descriptionLabel = new AR.Label(poiData.description.trunc(15), 0.8, {
+    this.descriptionLabel = new AR.Label(poiData.description, 0.8, {
         zOrder: 1,
         translate: {
             y: -0.55

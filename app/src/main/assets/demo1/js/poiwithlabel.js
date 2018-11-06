@@ -6,6 +6,7 @@ var World = {
     /* POI-Marker asset. */
     markerDrawableIdle: null,
 
+    marker: null,
     /* Called to inject new POI data. */
     loadPoisFromJsonData: function loadPoisFromJsonDataFn(poiData) {
 
@@ -14,7 +15,7 @@ var World = {
             reality view. This sample loads an AR.ImageResource when the World variable was defined. It will be
             reused for each marker that we will create afterwards.
         */
-        World.markerDrawableIdle = new AR.ImageResource("assets/marker_poi.png", {
+        World.markerDrawableIdle = new AR.ImageResource("assets/marker.png", {
             onError: World.onError
         });
 
@@ -24,7 +25,7 @@ var World = {
             Marker-class: the creation of the AR.GeoLocation, the creation of the AR.ImageDrawable and the
             creation of the AR.GeoObject. Then instantiate the Marker in the function loadPoisFromJsonData:
         */
-        var marker = new Marker(poiData);
+        World.marker = new Marker(poiData);
 
         /* Updates status message as a user feedback that everything was loaded properly. */
         World.updateStatusMessage('1 place loaded');
@@ -56,16 +57,29 @@ var World = {
             /* Creates a poi object with a random location near the user's location. */
             var poiData = {
                 "id": 1,
-                "longitude": (100.51725),
-                "latitude": (13.82091),
-                "altitude": alt,
-                "description": alt.toString(),
-                "title": "Hello!"
+                "longitude": (100.514121),
+                "latitude": (13.821115),
+                "description": World.distance(13.821115,100.514121,lat,lon).toFixed() + " m",
+                "title": "วิศวกรรมศาสตร์"
             };
 
             World.loadPoisFromJsonData(poiData);
             World.initiallyLoadedData = true;
+        }else{
+            World.marker.descriptionLabel.text = World.distance(13.821115,100.514121,lat,lon).toFixed() + " m";
         }
+    },
+
+    distance: function find_distance(lat1, lon1, lat2, lon2){  // generally used geo measurement function
+        var R = 6378.137; // Radius of earth in KM
+        var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
+        var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        return d * 1000; // meters
     },
 
     onError: function onErrorFn(error) {
