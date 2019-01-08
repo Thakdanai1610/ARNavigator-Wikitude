@@ -18,7 +18,9 @@ var World = {
         World.markerDrawableIdle = new AR.ImageResource("assets/marker.png", {
             onError: World.onError
         });
-
+        World.markerDrawableDirectionIndicator = new AR.ImageResource("assets/indi.png", {
+            onError: World.onError
+        });
         /*
             Since there are additional changes concerning the marker it makes sense to extract the code to a
             separate Marker class (see marker.js). Parts of the code are moved from loadPoisFromJsonData to the
@@ -57,16 +59,17 @@ var World = {
             /* Creates a poi object with a random location near the user's location. */
             var poiData = {
                 "id": 1,
-                "longitude": (100.514121),
-                "latitude": (13.821115),
-                "description": World.distance(13.821115,100.514121,lat,lon).toFixed() + " m",
+                "longitude": (100.51416667),
+                "latitude":  (13.82111972),
+                "description": World.distance(13.82111972,100.51416667,lat,lon).toFixed() + " m",
                 "title": "วิศวกรรมศาสตร์"
             };
-
+            document.getElementById("MyText").textContent= "ห่างจากจุดหมาย : " + World.distance(13.82111972,100.51416667,lat,lon).toFixed() + " m";
             World.loadPoisFromJsonData(poiData);
             World.initiallyLoadedData = true;
         }else{
-            World.marker.descriptionLabel.text = World.distance(13.821115,100.514121,lat,lon).toFixed() + " m";
+            World.marker.descriptionLabel.text = World.distance(13.82111972,100.51416667,lat,lon).toFixed() + " m";
+            document.getElementById("MyText").textContent= "ห่างจากจุดหมาย : " + World.distance(13.82111972,100.51416667,lat,lon).toFixed() + " m";
         }
     },
 
@@ -87,6 +90,11 @@ var World = {
     }
 };
 
+function test(in_put){
+        if (World.initiallyLoadedData) {
+            World.marker.titleLabel.text = in_put;
+        }
+    }
 /* 
     Set a custom function where location changes are forwarded to. There is also a possibility to set
     AR.context.onLocationChanged to null. In this case the function will not be called anymore and no further
