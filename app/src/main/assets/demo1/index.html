@@ -32,23 +32,67 @@
 </head>
 
 <body>
+
 <div data-role="page" id="page1" style="background: none;">
-    <div id="infoBox" class="info">
-        <div class="text" id="MyText"></div>
+        <div id="menu" style="display:block;">
+        <select name="category" id="category" onchange="showHide(this);">
+            <option value="0">---- Select Place ----</option>
+            <option value="B81">ตึก 81</option>
+            <option value="B86">ตึก 86</option>
+            <option value="B88">ตึก 88</option>
+            <option value="B89">ตึก 89</option>
+        </select>
+        </div>
+
+
+    <!-- Search Box ----------------------------------------------
+
+    <form>
+        <input type="text" name="input_place" placeholder="ไปไหนดีครับ.." style="  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color:#F0F0F0;">
+    </form>
+
+    ------------------------------------------------------------->
+
+
+    <div id="infoBox" class="info" style="display:none;">
+        <div class="text" style="text-align:center">
+            <div id="location_name" style="display: table-cell; vertical-align: middle;"></div>
+            <br>
+            <div id="MyText" style="display: table-cell; vertical-align: middle;"></div>
+        </div>
     </div>
+
     <!-- MAIN PAGE CONTENT -->
     <!-- transparent footer-->
     <div data-role="footer" class="ui-bar" data-theme="f" data-position="fixed" style="text-align:center;">
 
-        <!-- small status-button -->
+
+        <div id="startNavBT" style="display:none;">
+            <button data-role="button" data-inline="true" data-theme="b" onclick="startNav();">เริ่มต้นการนำทาง</button>
+        </div>
+
+
+        <div id="stopNavBT" style="display:none;">
+            <button data-role="button" data-inline="true" data-theme="b" onclick="stopNav();">ยกเลิกการนำทาง</button>
+        </div>
+
+
+        <!-- Temp ----------------------------------------------------------------
+       <!-- small status-button ->
         <a style="text-align:right;" id="popupInfoButton" href="#popupInfo" data-rel="popup" data-role="button"
            class="ui-icon-alt" data-inline="true" data-transition="pop" data-icon="alert" data-theme="e"
            data-iconpos="notext">Log</a> </p>
 
-        <!-- popup displayed when button clicked -->
+        <!-- popup displayed when button clicked ->
         <div data-role="popup" id="popupInfo" class="ui-content" data-theme="e" style="max-width:350px;">
             <p style="text-align:right;" id="status-message">Trying to find out where you are</p>
         </div>
+        -->
 
     </div>
 </div>
