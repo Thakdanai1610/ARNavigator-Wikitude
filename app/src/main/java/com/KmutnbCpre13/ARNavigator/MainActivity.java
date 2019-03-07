@@ -1,6 +1,7 @@
 package com.KmutnbCpre13.ARNavigator;
 
 import com.wikitude.architect.ArchitectView;
+import com.wikitude.architect.ArchitectJavaScriptInterfaceListener;
 import com.wikitude.architect.ArchitectStartupConfiguration;
 
 import com.KmutnbCpre13.ARNavigator.util.location.LocationProvider;
@@ -8,20 +9,24 @@ import com.wikitude.common.camera.CameraSettings;
 
 import android.location.Location;
 import android.location.LocationListener;
-//import android.location.LocationProvider;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ArchitectJavaScriptInterfaceListener {
 
     private ArchitectView architectView;
     private LocationProvider locationProvider;
+
+    private String state = "home";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +36,11 @@ public class MainActivity extends AppCompatActivity {
         architectView = (ArchitectView)this.findViewById( R.id.architectView );
         final ArchitectStartupConfiguration config = new ArchitectStartupConfiguration();
         config.setFeatures(ArchitectStartupConfiguration.Features.Geo);
-        config.setCameraResolution(CameraSettings.CameraResolution.AUTO);
+        config.setCameraResolution(CameraSettings.CameraResolution.HD_1280x720);
         config.setLicenseKey("");
 
         architectView.onCreate( config );
+        architectView.addArchitectJavaScriptInterfaceListener(this);
 
         locationProvider = new LocationProvider(this, new LocationListener() {
             @Override
@@ -64,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         architectView.onPostCreate();
         try{
-            this.architectView.load("file:///android_asset/demo1/index.html");
+            this.architectView.load("file:///android_asset/ARNavigator/index.html");
         } catch (Exception e){
 
         }
@@ -110,8 +116,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected  void onDestroy(){
         super.onDestroy();
-
+        architectView.removeArchitectJavaScriptInterfaceListener(this);
         architectView.onDestroy();
+
     }
 
     @Override
@@ -121,5 +128,29 @@ public class MainActivity extends AppCompatActivity {
         architectView.onPause();
         locationProvider.onPause();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(this.state.equals("navigate")){
+            architectView.callJavascript("stopNav()");
+        }else {
+            // if (!shouldAllowBack()) {
+            //   doSomething();
+            // } else {
+            super.onBackPressed();
+        }
+    }
+
+    public void onJSONObjectReceived(JSONObject jsonObject) {
+        try {
+        switch (jsonObject.getString("action")) {
+            case "sendState":
+                this.state = jsonObject.getString("state");
+                break;
+        }
+        } catch (JSONException e) {
+
+        }
     }
 }

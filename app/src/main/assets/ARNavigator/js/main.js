@@ -75,39 +75,52 @@ function test(in_put){
         }
     }
 
+var dropdown = false;
+
 function showHide(that) {
             if(that.value == "0") {
+                dropdown = false;
                 document.getElementById("startNavBT").style.display = "none";
             } else {
+                dropdown = true;
                 document.getElementById("startNavBT").style.display = "block";
             }
     }
 
+var path;
 function startNav() {
     document.getElementById("startNavBT").style.display = "none";
     document.getElementById("menu").style.display = "none";
     document.getElementById("stopNavBT").style.display = "block";
     document.getElementById("infoBox").style.display = "block";
     var location_query = getLocationByName(document.getElementById("category").value)[0];
-
+    console.log(location_query);
     /******* Test Dijkstra : Set Source = Back Ally *******/
-    var graph = new Graph(map);
-    console.log(graph.findShortestPath('Back_Alley', location_query.id));
-    //document.getElementById("MyText").textContent= ;
 
+    var graph = new Graph(map);
+    path = graph.findShortestPath('back_alley', location_query.id);
+    var location_query = getLocationByName(path[0])[0];
+    //document.getElementById("MyText").textContent= ;
+    console.log(path);
     World.lat_target = location_query.lat;
     World.long_target = location_query.long;
-    World.loc_name = location_query.name;
+    World.loc_name = path[0];
     World.selectPlace = true;
+
+    AR.platform.sendJSONObject({action: "sendState", state: "navigate"});
 }
 
 function stopNav() {
     World.selectPlace = false;
-    World.initiallyLoadedData = false;document.getElementById("menu").style.display = "block";
-    document.getElementById("category").value = "0";
+    destroyObject();
+
+    index_path = 0;
+    //document.getElementById("category").value = "0";
     document.getElementById("stopNavBT").style.display = "none";
     document.getElementById("infoBox").style.display = "none";
-    World.marker.markerObject.destroy();
+
+    resetDropdown();
+    document.getElementById("menu").style.display = "block";
 }
 
 
@@ -133,11 +146,12 @@ setInterval(function() {
             "description":  find_distance(World.lat_target, World.long_target, World.lat_in, World.long_in).toFixed() + " m", //World.distance(13.82111972,100.51416667,lat,lon).toFixed() + " m",
             "title": World.loc_name //"วิศวกรรมศาสตร์"
         };
-
+        console.log("hello");
         document.getElementById("location_name").textContent = World.loc_name;
         document.getElementById("MyText").textContent = "ห่างจากจุดหมาย : " + find_distance(World.lat_target, World.long_target, World.lat_in, World.long_in).toFixed() + " m";//World.distance(13.82111972,100.51416667,lat,lon).toFixed() + " m";
         World.loadPoisFromJsonData(poiData);
         World.initiallyLoadedData = true;
+
     }else if(World.initiallyLoadedData){
         World.marker.descriptionLabel.text = find_distance(World.lat_target, World.long_target, World.lat_in, World.long_in).toFixed() + " m";//World.distance(13.82111972,100.51416667,lat,lon).toFixed() + " m";
         document.getElementById("MyText").textContent = "ห่างจากจุดหมาย : " + find_distance(World.lat_target, World.long_target, World.lat_in, World.long_in).toFixed() + " m";//World.distance(13.82111972,100.51416667,lat,lon).toFixed() + " m";
@@ -157,14 +171,74 @@ function find_distance(lat1, lon1, lat2, lon2){  // generally used geo measureme
         return d * 1000; // meters
 }
 
+function createDropDown(){
+    for (let i of json_file) {
+        if(i.floor == 1){
+            document.getElementById("category").innerHTML += '<option value="' + i.id + '">' + i.name + '</option>';
+        }
+    }
+}
+
+function resetDropdown(){
+    document.getElementById("startNavBT").style.display = "none";
+    var myselect = $("select#category");
+    myselect[0].selectedIndex = 0;
+    myselect.selectmenu("refresh");
+
+    AR.platform.sendJSONObject({action: "sendState", state: "home"});
+
+}
+
+function checkState(){
+    if(World.selectPlace){
+        stopNav();
+    }else if(dropdown){
+        resetDropdown();
+    }
+}
+
+function destroyObject(){
+    if(World.initiallyLoadedData){
+        World.marker.markerObject.destroy();
+        World.initiallyLoadedData = false;
+    }
+}
 
 /*********************** Test Function ****************************/
+var index_path = 0;
 function nextModel(){
+    index_path++;
+    if(index_path < path.length){
+        document.getElementById("location_name").textContent = path[index_path];
+    } else {
+        index_path = path.length - 1;
+    }
+    var location_query = getLocationByName(path[index_path])[0];
+    console.log(location_query);
+    World.lat_target = location_query.lat;
+    World.long_target = location_query.long;
+    World.loc_name = path[index_path];
+    destroyObject();
 
 }
 
 function previousModel(){
+    index_path--;
+    if(index_path >= 0){
+        document.getElementById("location_name").textContent = path[index_path];
+    } else {
+        index_path = 0;
+    }
+        var location_query = getLocationByName(path[index_path])[0];
+        console.log(location_query);
+        World.lat_target = location_query.lat;
+        World.long_target = location_query.long;
+        World.loc_name = path[index_path];
+        destroyObject();
+}
 
+function text_console(text){
+    document.getElementById("console").textContent = text;
 }
 
 /*
