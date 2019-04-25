@@ -34,7 +34,7 @@
 }, {
   "floor":1,"id": "smo_cafe", "name": "ร้าน Smo Cafe", "lat": 13.82144096, "long": 100.5146885
 }, {
-  "floor":1,"id": "back_alley", "name": "ทางเข้าจากหลังม.", "lat": 13.82169968 "long": 100.5144543
+  "floor":1,"id": "back_alley", "name": "ทางเข้าจากหลังม.", "lat": 13.82169968, "long": 100.5144543
 }, {
   "floor":1,"id": "intersection_of_b81", "name": "ทางแยกหน้าตึก 81", "lat": 13.82130726, "long": 100.5143184
 }, {
