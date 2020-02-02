@@ -29,7 +29,7 @@ function Marker(poiData) {
         In the following both AR.Labels are initialized and positioned. Note that they are added to the cam
         property of the AR.GeoObject the same way as an AR.ImageDrawable.
     */
-    this.markerDrawableIdle = new AR.Model("assets/logo.wt3",  { scale: {x:0.075, y:0.075, z:0.075},rotate: {roll: 90, heading: 90.0} });
+    this.markerDrawableIdle = new AR.Model("assets/logo.wt3",  { scale: {x:0.025, y:0.025, z:0.025},rotate: {roll: 90, heading: 90.0} });
 
     this.directionIndicatorDrawable = new AR.ImageDrawable(World.markerDrawableDirectionIndicator, 0.1, {
             enabled: true,
@@ -60,7 +60,7 @@ function Marker(poiData) {
     /* Changed: */
     this.markerObject = new AR.GeoObject(markerLocation, {
         drawables: {
-            cam: [this.markerDrawableIdle, this.titleLabel, this.descriptionLabel],
+            cam: [this.markerDrawableIdle, this.descriptionLabel],
             indicator: this.directionIndicatorDrawable
         }
     });
